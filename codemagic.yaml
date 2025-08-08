@@ -1,0 +1,28 @@
+workflows:
+  ios-app:
+    name: Build iOS App
+    environment:
+      vars:
+        XCODE_WORKSPACE: "CoreMotion-iOS.xcodeproj"
+        XCODE_SCHEME: "CoreMotion_iOS"
+      xcode: latest
+    scripts:
+      - name: Build .ipa
+        script: |
+          xcodebuild clean archive \
+            -project "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -archivePath $CM_BUILD_DIR/$XCODE_SCHEME.xcarchive \
+            -destination "generic/platform=iOS" \
+            -allowProvisioningUpdates
+          xcodebuild -exportArchive \
+            -archivePath $CM_BUILD_DIR/$XCODE_SCHEME.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath $CM_BUILD_DIR/ExportedIPA \
+            -allowProvisioningUpdates
+    artifacts:
+      - ExportedIPA/*.ipa
+    publishing:
+      email:
+        recipients:
+          - louismarchand2000@gmail.com
