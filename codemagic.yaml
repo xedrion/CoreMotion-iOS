@@ -3,20 +3,20 @@ workflows:
     name: Build iOS App
     environment:
       vars:
-        XCODE_WORKSPACE: "CoreMotion_iOS.xcodeproj"
-        XCODE_SCHEME: "CoreMotion_iOS"
+        XCODE_WORKSPACE: "CoreMotionDataExtractor.xcodeproj"
+        XCODE_SCHEME: "CoreMotionDataExtractor"
       xcode: latest
     scripts:
       - name: Build .ipa
         script: |
           xcodebuild clean archive \
-            -project "CoreMotion_iOS.xcodeproj" \
-            -scheme "CoreMotion_iOS" \
-            -archivePath $CM_BUILD_DIR/CoreMotion_iOS.xcarchive \
+            -project "CoreMotionDataExtractor.xcodeproj" \
+            -scheme "CoreMotionDataExtractor" \
+            -archivePath $CM_BUILD_DIR/CoreMotionDataExtractor.xcarchive \
             -destination "generic/platform=iOS" \
             -allowProvisioningUpdates
           xcodebuild -exportArchive \
-            -archivePath $CM_BUILD_DIR/CoreMotion_iOS.xcarchive \
+            -archivePath $CM_BUILD_DIR/CoreMotionDataExtractor.xcarchive \
             -exportOptionsPlist exportOptions.plist \
             -exportPath $CM_BUILD_DIR/ExportedIPA \
             -allowProvisioningUpdates
