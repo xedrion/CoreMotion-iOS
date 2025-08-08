@@ -9,13 +9,9 @@ workflows:
     scripts:
       - name: Patch project settings
         script: |
-          echo "Setting SWIFT_VERSION and deployment target..."
-          sed -i '' '/SWIFT_VERSION/d' CoreMotionDataExtractor.xcodeproj/project.pbxproj
-          echo '				SWIFT_VERSION = 5.0;' >> CoreMotionDataExtractor.xcodeproj/project.pbxproj
-
-          sed -i '' '/IPHONEOS_DEPLOYMENT_TARGET/d' CoreMotionDataExtractor.xcodeproj/project.pbxproj
-          echo '				IPHONEOS_DEPLOYMENT_TARGET = 14.0;' >> CoreMotionDataExtractor.xcodeproj/project.pbxproj
-
+             echo "Fixing Swift and iOS deployment target"
+             plutil -replace targets.CoreMotionDataExtractor.buildSettings.SWIFT_VERSION -string "5.0" CoreMotionDataExtractor.xcodeproj/project.pbxproj || true
+             plutil -replace targets.CoreMotionDataExtractor.buildSettings.IPHONEOS_DEPLOYMENT_TARGET -string "14.0" CoreMotionDataExtractor.xcodeproj/project.pbxproj || true
       - name: Build .ipa
         script: |
           xcodebuild clean archive \
