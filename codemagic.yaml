@@ -7,30 +7,30 @@ workflows:
         XCODE_SCHEME: "CoreMotionDataExtractor"
       xcode: latest
     scripts:
-      - name: Set Swift version and iOS target
+      - name: Patch project settings
         script: |
-          sed -i '' 's/SWIFT_VERSION =.*/SWIFT_VERSION = 5.0;/g' CoreMotionDataExtractor.xcodeproj/project.pbxproj
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET =.*/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/g' CoreMotionDataExtractor.xcodeproj/project.pbxproj
+          echo "Setting SWIFT_VERSION and deployment target..."
+          sed -i '' '/SWIFT_VERSION/d' CoreMotionDataExtractor.xcodeproj/project.pbxproj
+          echo '				SWIFT_VERSION = 5.0;' >> CoreMotionDataExtractor.xcodeproj/project.pbxproj
+
+          sed -i '' '/IPHONEOS_DEPLOYMENT_TARGET/d' CoreMotionDataExtractor.xcodeproj/project.pbxproj
+          echo '				IPHONEOS_DEPLOYMENT_TARGET = 14.0;' >> CoreMotionDataExtractor.xcodeproj/project.pbxproj
+
       - name: Build .ipa
         script: |
           xcodebuild clean archive \
-            -project "CoreMotionDataExtractor.xcodeproj" \
-            -scheme "CoreMotionDataExtractor" \
-            -archivePath $CM_BUILD_DIR/CoreMotionDataExtractor.xcarchive \
+            -project "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -archivePath $CM_BUILD_DIR/$XCODE_SCHEME.xcarchive \
             -destination "generic/platform=iOS" \
             -allowProvisioningUpdates
           xcodebuild -exportArchive \
-            -archivePath $CM_BUILD_DIR/CoreMotionDataExtractor.xcarchive \
+            -archivePath $CM_BUILD_DIR/$XCODE_SCHEME.xcarchive \
             -exportOptionsPlist exportOptions.plist \
             -exportPath $CM_BUILD_DIR/ExportedIPA \
             -allowProvisioningUpdates
 
     artifacts:
       - ExportedIPA/*.ipa
-
-    publishing:
-      email:
-        recipients:
-          - louismarchand2000@gmail.com
 
 
