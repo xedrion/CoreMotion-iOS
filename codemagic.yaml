@@ -7,6 +7,10 @@ workflows:
         XCODE_SCHEME: "CoreMotionDataExtractor"
       xcode: latest
     scripts:
+      - name: Set Swift version and iOS target
+        script: |
+          sed -i '' 's/SWIFT_VERSION =.*/SWIFT_VERSION = 5.0;/g' CoreMotionDataExtractor.xcodeproj/project.pbxproj
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET =.*/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/g' CoreMotionDataExtractor.xcodeproj/project.pbxproj
       - name: Build .ipa
         script: |
           xcodebuild clean archive \
@@ -28,4 +32,5 @@ workflows:
       email:
         recipients:
           - louismarchand2000@gmail.com
+
 
